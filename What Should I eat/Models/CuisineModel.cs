@@ -16,13 +16,14 @@ namespace What_Should_I_eat.Models
         }
         public string Name { get; set; }
 
+        public int ContinentId { get; set; }
+
         public string Description { get; set; }
 
         public IFormFile Photo { get; set; }
 
-        public Continent Continent { get; set; }
-
         public ICollection<CuisineDish> CuisineDishes { get; set; }
+
         public ICollection<Dish> Dishes { get; set; }
     }
 }

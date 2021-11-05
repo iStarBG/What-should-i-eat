@@ -247,6 +247,9 @@ namespace What_Should_I_eat.Data.Migrations
                     b.Property<int>("ContinentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ContinentId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -259,6 +262,8 @@ namespace What_Should_I_eat.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContinentId");
+
+                    b.HasIndex("ContinentId1");
 
                     b.ToTable("Cuisines");
                 });
@@ -385,11 +390,15 @@ namespace What_Should_I_eat.Data.Migrations
 
             modelBuilder.Entity("What_Should_I_eat.Data.Entities.Cuisine", b =>
                 {
-                    b.HasOne("What_Should_I_eat.Data.Entities.Continent", "Continent")
+                    b.HasOne("What_Should_I_eat.Data.Entities.Continent", null)
                         .WithMany("Cuisines")
                         .HasForeignKey("ContinentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("What_Should_I_eat.Data.Entities.Continent", "Continent")
+                        .WithMany()
+                        .HasForeignKey("ContinentId1");
 
                     b.Navigation("Continent");
                 });

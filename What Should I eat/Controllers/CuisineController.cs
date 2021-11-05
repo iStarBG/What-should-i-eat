@@ -43,7 +43,7 @@ namespace What_Should_I_eat.Controllers
             {
                 Id = cuisine.Id,
                 Name = cuisine.Name,
-                Continent = cuisine.Continent,
+                ContinentId = cuisine.ContinentId,
                 Description = cuisine.Description,
                 CuisineDishes = cuisine.CuisineDishes,
                 Dishes = _context.Dishes.ToList()
@@ -69,7 +69,6 @@ namespace What_Should_I_eat.Controllers
 
         //Post Create
         [HttpPost]
-
         public async Task<IActionResult> Create(CuisineModel model)
         {
             if (ModelState.IsValid)
@@ -77,9 +76,9 @@ namespace What_Should_I_eat.Controllers
                 Cuisine cuisine = new Cuisine()
                 {
                     Name = model.Name,
-                    Continent = model.Continent,
+                    ContinentId = model.ContinentId,
                     Description = model.Description,
-                    //Photo = SaveFile(model.Photo)
+                    Photo = SaveFile(model.Photo)
                 };
 
                 _context.Add(cuisine);
@@ -91,7 +90,7 @@ namespace What_Should_I_eat.Controllers
             return View(model);
         }
 
-        public static string SaveFile(IFormFile file)
+        private static string SaveFile(IFormFile file)
         {
             var fileName = System.IO.Path.GetFileName(file.FileName);
             var extension = fileName.Split('.').Last();
@@ -137,19 +136,17 @@ namespace What_Should_I_eat.Controllers
             CuisineModel model = new CuisineModel()
             {
                 Id = cuisine.Id,
+                ContinentId = cuisine.ContinentId,
                 Name = cuisine.Name,
-                Continent = cuisine.Continent,
                 Description = cuisine.Description,
                 Photo = null
             };
 
 
-            return View(model
-            );
+            return View(model);
         }
 
         // Post: Edit
-
         [HttpPost]
 
         public async Task<IActionResult> Edit(CuisineModel model)
@@ -161,8 +158,9 @@ namespace What_Should_I_eat.Controllers
                 {
                     Cuisine cuisine = new Cuisine()
                     {
+                        Id=model.Id,
                         Name = model.Name,
-                        Continent = model.Continent,
+                        ContinentId = model.ContinentId,
                         Description = model.Description,
                         Photo = SaveFile(model.Photo)
                     };
@@ -182,7 +180,6 @@ namespace What_Should_I_eat.Controllers
 
 
         //Get Delete
-
         public async Task<IActionResult> Delete(int? id)
         {
 

@@ -27,9 +27,10 @@ namespace What_Should_I_eat.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Cuisine>()
-                .HasOne<Continent>(c => c.Continent)
-                .WithMany(c =>c.Cuisines)
+                .HasOne<Continent>(c=>c.Continent)
+                .WithMany(c => c.Cuisines)
                 .HasForeignKey(c => c.ContinentId);
+
             builder.Entity<CuisineDish>().
                 HasKey(cd => new {cd.CuisineId, cd.DishId});
             builder.Entity<DishIngredient>()
