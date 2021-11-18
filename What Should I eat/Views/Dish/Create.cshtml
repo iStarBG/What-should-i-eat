@@ -1,13 +1,13 @@
-﻿@model CuisineModel
+﻿@model DishModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Add Cuisine</h1>
+<h1>Create</h1>
 
-<h4>Cuisine</h4>
-<hr/>
+<h4>Dish</h4>
+<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
@@ -18,18 +18,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ContinentId" class="control-label">Continent</label>
-                <select asp-for="ContinentId" class="form-control"  asp-items="ViewBag.Continents"></select>
-                <span asp-validation-for="ContinentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" type="file" />
+                <input asp-for="Photo" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

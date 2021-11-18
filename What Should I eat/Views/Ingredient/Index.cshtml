@@ -1,4 +1,4 @@
-﻿@model IEnumerable<What_Should_I_eat.Data.Entities.Cuisine>
+﻿@model IEnumerable<What_Should_I_eat.Data.Entities.Ingredient>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,12 +16,6 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Continent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Photo)
             </th>
             <th></th>
@@ -32,13 +26,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Continent.Id)
-                
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 <img src="/images/@item.Photo.Replace("wwwroot/images","")" alt="@item.Name" />

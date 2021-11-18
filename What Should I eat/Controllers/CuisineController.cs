@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using What_Should_I_eat.Data;
 using What_Should_I_eat.Data.Entities;
@@ -21,10 +22,15 @@ namespace What_Should_I_eat.Controllers
             _context = context;
         }
 
-
-        //HTTP Get : All Cuisines
         public async Task<IActionResult> Index()
         {
+            ViewBag.Continents = _context.Continents
+                .Select(x => new SelectListItem()
+                    {
+                        Text = x.Name,
+                        Value = x.Id.ToString()
+                    }
+                ).ToList();
             return View( await _context.Cuisines.ToListAsync());
         }
 
@@ -61,9 +67,15 @@ namespace What_Should_I_eat.Controllers
 
 
         //Get Create
-
         public IActionResult Create()
         {
+            ViewBag.Continents = _context.Continents
+                .Select(x => new SelectListItem()
+                    {
+                        Text = x.Name,
+                        Value = x.Id.ToString()
+                    }
+                ).ToList();
             return View();
         }
 
@@ -71,6 +83,7 @@ namespace What_Should_I_eat.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CuisineModel model)
         {
+            
             if (ModelState.IsValid)
             {
                 Cuisine cuisine = new Cuisine()

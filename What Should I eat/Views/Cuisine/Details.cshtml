@@ -16,24 +16,25 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        @*<dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Continent)
+        <dt class = "col-sm-2">
+           Continent
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Continent.Id)
-        </dd>*@
+            @Html.DisplayFor(model => model.ContinentId)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Photo)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Photo)
-        </dd>
+        <dd class="col-sm-10">
+            <img src="/images/@Model.Photo.ToString().Replace("wwwroot/images","")" alt="@Model.Name" />
+        </dd>*@
+
     </dl>
 </div>
 <div>

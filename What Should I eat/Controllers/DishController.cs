@@ -22,13 +22,10 @@ namespace What_Should_I_eat.Controllers
             _context = context;
         }
 
-
-
         public async Task<IActionResult> Index()
         {
             return View(await _context.Dishes.ToListAsync());
         }
-
 
         //Get Details
 
@@ -59,7 +56,34 @@ namespace What_Should_I_eat.Controllers
 
         }
 
+       
 
+
+        //Get Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        //Post: Create
+        [HttpPost]
+        public async Task<IActionResult> Create( DishModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Dish dish = new Dish()
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Photo = SaveFile(model.Photo)
+                };
+                _context.Add(dish);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
 
         public static string SaveFile(IFormFile file)
         {
@@ -87,38 +111,7 @@ namespace What_Should_I_eat.Controllers
             return newFileName;
         }
 
-
-
-        //Get Create
-
-        public IActionResult Craete()
-        {
-            return View();
-        }
-
-
-        //Post: Create
-        [HttpPost]
-
-        public async Task<IActionResult> CreateConfirm( DishModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                Dish dish = new Dish()
-                {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Photo = SaveFile(model.Photo)
-                };
-                _context.Add(dish);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(model);
-        }
-
-       //Get: Edit
+        //Get: Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id==null)
@@ -146,7 +139,7 @@ namespace What_Should_I_eat.Controllers
 
         //Post:Edit
         [HttpPost]
-        public async Task<IActionResult> EditConfirm(DishModel model)
+        public async Task<IActionResult> Edit(DishModel model)
         {
             if (ModelState.IsValid)
             {
@@ -173,8 +166,6 @@ namespace What_Should_I_eat.Controllers
         }
 
         //Get: Delete
-
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
