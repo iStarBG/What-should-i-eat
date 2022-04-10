@@ -10,7 +10,6 @@ namespace What_Should_I_eat.Data.Entities
         public Dish()
         {
             this.CuisineDishes = new HashSet<CuisineDish>();
-            this.DishIngredients = new HashSet<DishIngredient>();
         }
 
 
@@ -19,7 +18,6 @@ namespace What_Should_I_eat.Data.Entities
 
         public virtual ICollection<CuisineDish> CuisineDishes { get; set; }
 
-        public virtual ICollection<DishIngredient> DishIngredients { get; set; }
 
 
     }

@@ -43,8 +43,6 @@ namespace What_Should_I_eat.Controllers
             {
                 Id = dish.Id,
                 Name = dish.Name,
-                DishIngredients = dish.DishIngredients,
-                Ingredients = _context.Ingredients.ToList()
             };
 
             if (dish == null)
@@ -55,9 +53,6 @@ namespace What_Should_I_eat.Controllers
             return View(model);
 
         }
-
-       
-
 
         //Get Create
         public IActionResult Create()

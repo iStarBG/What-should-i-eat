@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using What_Should_I_eat.Data;
+using What_Should_I_eat.Services.CuisineCRUD;
+using What_Should_I_eat.Services.Global;
 
 namespace What_Should_I_eat
 {
@@ -27,6 +30,12 @@ namespace What_Should_I_eat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ICreateService,CreateService>();
+            services.AddScoped<IEditService,EditService>();
+            services.AddScoped<IDeleteService,DeleteService>();
+            services.AddTransient<ISaveFileService, SaveFileService>();
+            services.AddTransient<IAssignService, AssignService>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

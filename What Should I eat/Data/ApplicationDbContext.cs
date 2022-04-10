@@ -12,9 +12,7 @@ namespace What_Should_I_eat.Data
         public virtual DbSet<Continent> Continents { get; set; }
         public virtual DbSet<Cuisine> Cuisines { get; set; }
         public virtual DbSet<Dish> Dishes { get; set; }
-        public virtual DbSet<Ingredient> Ingredients { get; set; }
-        public virtual DbSet<CuisineDish> CuisineDishes  { get; set; }
-        public virtual  DbSet<DishIngredient> DishIngredients { get; set; }
+        public virtual DbSet<CuisineDish> CuisineDishes { get; set; }
 
 
 
@@ -33,8 +31,6 @@ namespace What_Should_I_eat.Data
 
             builder.Entity<CuisineDish>().
                 HasKey(cd => new {cd.CuisineId, cd.DishId});
-            builder.Entity<DishIngredient>()
-                .HasKey(di => new {di.DishId,di.IngredientId});
 
             base.OnModelCreating(builder);
         }

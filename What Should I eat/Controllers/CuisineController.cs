@@ -10,16 +10,31 @@ using Microsoft.EntityFrameworkCore;
 using What_Should_I_eat.Data;
 using What_Should_I_eat.Data.Entities;
 using What_Should_I_eat.Models;
+using What_Should_I_eat.Services.CuisineCRUD;
+using What_Should_I_eat.Services.Global;
 
 namespace What_Should_I_eat.Controllers
 {
     public class CuisineController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public CuisineController(ApplicationDbContext context)
+        private readonly ICreateService _createService;
+        private readonly IEditService _editService;
+        private readonly IDeleteService _deleteService;
+        private readonly IAssignService _assignService;
+        public CuisineController(
+            ApplicationDbContext context,
+            ICreateService createService,
+            IEditService editService,
+            IDeleteService deleteService,
+            IAssignService assignService)
+        
         {
             _context = context;
+            _createService = createService;
+            _editService = editService;
+            _deleteService = deleteService;
+            _assignService = assignService; 
         }
 
         public async Task<IActionResult> Index()
@@ -66,97 +81,47 @@ namespace What_Should_I_eat.Controllers
         }
 
 
-        //Get Create
         public IActionResult Create()
         {
-            ViewBag.Continents = _context.Continents
-                .Select(x => new SelectListItem()
-                    {
-                        Text = x.Name,
-                        Value = x.Id.ToString()
-                    }
-                ).ToList();
-            return View();
+           return _createService.Create();
+           
         }
 
         //Post Create
         [HttpPost]
         public async Task<IActionResult> Create(CuisineModel model)
         {
-            
-            if (ModelState.IsValid)
-            {
-                Cuisine cuisine = new Cuisine()
-                {
-                    Name = model.Name,
-                    ContinentId = model.ContinentId,
-                    Description = model.Description,
-                    Photo = SaveFile(model.Photo)
-                };
+            #region without DI
+            //if (ModelState.IsValid)
+            //{
+            //    Cuisine cuisine = new Cuisine()
+            //    {
+            //        Name = model.Name,
+            //        ContinentId = model.ContinentId,
+            //        Description = model.Description,
+            //        Photo = SaveFile(model.Photo)
+            //    };
 
-                _context.Add(cuisine);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            //    _context.Add(cuisine);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
 
 
-            return View(model);
-        }
+            //return View(model);
+            #endregion
 
-        private static string SaveFile(IFormFile file)
-        {
-            var fileName = System.IO.Path.GetFileName(file.FileName);
-            var extension = fileName.Split('.').Last();
-            var fileNameWithoutExtension = string.Join("", fileName.Split('.').Take(fileName.Length - 1));
+            await _createService.Create(model);
 
-            var newFileName = "wwwroot/images/" + String.Format("{0}-{1:ddMMYYYHHmmss}.{2}",
-                fileNameWithoutExtension,
-                DateTime.Now,
-                extension);
-            if (!Directory.Exists(Path.GetDirectoryName(newFileName)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(newFileName));
-            }
+            return RedirectToAction(nameof(Index));
 
-            using (var localFile = System.IO.File.OpenWrite(newFileName))
-            {
-                using (var uploadedFile = file.OpenReadStream())
-                {
-                    uploadedFile.CopyTo(localFile);
-                }
-            }
-
-            return newFileName;
         }
 
         // Get: Edit
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id ==null)
-            {
-                return NotFound();
-            }
-
-            var cuisine = await _context.Cuisines.FindAsync(id);
-
-            if (cuisine==null)
-            {
-                return NotFound();
-            }
-
-
-            CuisineModel model = new CuisineModel()
-            {
-                Id = cuisine.Id,
-                ContinentId = cuisine.ContinentId,
-                Name = cuisine.Name,
-                Description = cuisine.Description,
-                Photo = null
-            };
-
-
-            return View(model);
+           return await _editService.Edit(id);
         }
 
         // Post: Edit
@@ -164,31 +129,7 @@ namespace What_Should_I_eat.Controllers
 
         public async Task<IActionResult> Edit(CuisineModel model)
         {
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    Cuisine cuisine = new Cuisine()
-                    {
-                        Id=model.Id,
-                        Name = model.Name,
-                        ContinentId = model.ContinentId,
-                        Description = model.Description,
-                        Photo = SaveFile(model.Photo)
-                    };
-                    _context.Update(cuisine);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(model);
+           return await _editService.Edit(model);
         }
 
 
@@ -196,19 +137,7 @@ namespace What_Should_I_eat.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var cuisine = await _context.Cuisines.FirstOrDefaultAsync(c =>c.Id ==id);
-
-            if (cuisine==null)
-            {
-                return NotFound();
-            }
-
-            return View(cuisine);
+            return await _deleteService.Delete(id);
 
         }
 
@@ -217,44 +146,14 @@ namespace What_Should_I_eat.Controllers
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
 
-            var cuisine = await _context.Cuisines.FindAsync(id);
-
-            _context.Remove(cuisine);
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+           return await _deleteService.DeleteConfirmed(id);
 
         }
 
 
         public async Task<IActionResult> AssignDish(int cuisineId, int dishId) 
         {
-            var cuisine = await _context.Cuisines.FindAsync(cuisineId);
-
-            if (cuisine != null)
-            {
-                var dish = await _context.Dishes.FindAsync(dishId);
-
-                if (dish!=null)
-                {
-                    if (cuisine.CuisineDishes.
-                        Where(item => item.CuisineId==cuisineId && item.DishId==dishId).
-                        Count() ==0)
-                    {
-                        cuisine.CuisineDishes.Add(new CuisineDish()
-                        {
-                            CuisineId = cuisineId,
-                            DishId = dishId
-                        });
-
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-            }
-
-            return RedirectToAction("Index");
+          return await  _assignService.AssignDish(cuisineId, dishId);
         }
 
 
